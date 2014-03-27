@@ -1,4 +1,3 @@
-
 void computeIMU () {
   uint8_t axis;
   static int16_t gyroADCprevious[3] = {0,0,0};
@@ -160,7 +159,20 @@ float InvSqrt (float x){
 
 // Rotate Estimated vector(s) with small angle approximation, according to the gyro data
 // wikipedia: small angle approximation
-void rotateV(struct fp_vector *v,float* delta) {
+/*
+* added by dongshan
+* refer to 3 degree rotation, here the web link
+* http://inside.mines.edu/~gmurray/ArbitraryAxisRotation/ArbitraryAxisRotation.html
+*/
+
+/*
+*	|1	-YAW	ROLL	|   |x|   |x'|
+*	|YAW	1	PITCH	| * |y| = |y'|
+*	|ROLL	PITCH	-1	|   |z|   |z'|
+*	
+*	where x' y' z' are the new vector, x y z are the original vector
+*/
+void rotateV(struct fp_vector *v, float* delta) {
   fp_vector v_tmp = *v;
   //  delta = gyroData[axis] - lastGyro[axis];  In Multiim
   v->Z -= delta[ROLL]  * v_tmp.X + delta[PITCH] * v_tmp.Y;
